@@ -40,4 +40,25 @@ public class Colegio {
     public void setEstudiantes(List<Estudiante> estudiantes) {
         this.estudiantes = estudiantes;
     }
+
+    // ---------------------------------------------------------------- registro
+    /** SOBRECARGA de registrar: versión para Profesor. */
+    public void registrar(Profesor profesor) {
+        profesores.add(profesor);
+    }
+
+    /** SOBRECARGA de registrar: versión para Estudiante. */
+    public void registrar(Estudiante estudiante) {
+        estudiantes.add(estudiante);
+    }
+
+    /**
+     * Lista polimórfica con todas las personas del colegio. Cada elemento
+     * responde a mostrarInformacion() según su clase real.
+     */
+    public List<Persona> getPersonas() {
+        List<Persona> personas = new ArrayList<>(profesores);
+        personas.addAll(estudiantes);
+        return personas;
+    }
 }
