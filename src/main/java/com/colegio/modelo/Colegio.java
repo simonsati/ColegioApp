@@ -86,6 +86,24 @@ public class Colegio {
         return ordenados;
     }
 
+    /** Suma de los pagos mensuales de todos los profesores. */
+    public double calcularTotalNomina() {
+        double total = 0;
+        for (Profesor p : profesores) {
+            total += p.calcularPagoMensual();
+        }
+        return total;
+    }
+
+    /** Suma de las prestaciones sociales (19 %) que debe cubrir el colegio. */
+    public double calcularTotalPrestaciones() {
+        double total = 0;
+        for (Profesor p : profesores) {
+            total += p.calcularPrestaciones();
+        }
+        return total;
+    }
+
     /**
      * Lista polimórfica con todas las personas del colegio. Cada elemento
      * responde a mostrarInformacion() según su clase real.
