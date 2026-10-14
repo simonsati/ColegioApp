@@ -110,7 +110,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProfesoresActionPerformed
 
     private void btnEstudiantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstudiantesActionPerformed
-        // TODO: abrir el formulario de registro de estudiantes
+        abrir(new FrmEstudiantes(colegio));
     }//GEN-LAST:event_btnEstudiantesActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed

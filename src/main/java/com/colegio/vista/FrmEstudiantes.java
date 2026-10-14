@@ -49,6 +49,17 @@ public class FrmEstudiantes extends javax.swing.JFrame {
         }
     }
 
+    private void limpiarFormulario() {
+        txtNombre.setText("");
+        txtCodigo.setText("");
+        txtDireccion.setText("");
+        txtTelefono.setText("");
+        txtAcudiente.setText("");
+        txtFechaNacimiento.setText("");
+        cmbGrado.setSelectedIndex(0);
+        txtNombre.requestFocus();
+    }
+
     /** Devuelve el texto del campo o lanza excepción si está vacío. */
     private static String requerido(JTextField campo, String nombreCampo) {
         String valor = campo.getText().trim();
@@ -191,7 +202,7 @@ public class FrmEstudiantes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        // TODO add your handling code here:
+        limpiarFormulario();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
@@ -210,6 +221,7 @@ public class FrmEstudiantes extends javax.swing.JFrame {
             colegio.registrar(estudiante);   // método sobrecargado
 
             cargarTabla();
+            limpiarFormulario();
             JOptionPane.showMessageDialog(this, "Estudiante registrado:\n" + estudiante.mostrarInformacion(),
                     "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
         } catch (IllegalArgumentException ex) {
@@ -218,7 +230,7 @@ public class FrmEstudiantes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_btnCerrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
