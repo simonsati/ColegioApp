@@ -15,6 +15,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         initComponents();
         lblTitulo.setText(colegio.getNombre() + " - Registro Académico");
         actualizarEstado();
+        pack();                        // reajusta el tamaño al nuevo título
+        setLocationRelativeTo(null);
     }
 
     /** Muestra cuántos profesores y estudiantes hay registrados. */
