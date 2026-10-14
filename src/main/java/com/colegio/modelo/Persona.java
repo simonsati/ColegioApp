@@ -1,6 +1,8 @@
 package com.colegio.modelo;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Superclase que agrupa los datos personales comunes a Profesores y
@@ -11,6 +13,9 @@ import java.time.LocalDate;
  * defecto y los datos se asignan con los setters.
  */
 public class Persona {
+
+    public static final int MAYORIA_DE_EDAD = 18;
+    public static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     protected String nombre;
     protected String direccion;
@@ -48,5 +53,44 @@ public class Persona {
 
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    // ---------------------------------------------------------------- lógica
+    /** Edad en años cumplidos a la fecha de hoy. */
+    public int calcularEdad() {
+        if (fechaNacimiento == null) {
+            return 0;
+        }
+        return Period.between(fechaNacimiento, LocalDate.now()).getYears();
+    }
+
+    public boolean esMayorDeEdad() {
+        return calcularEdad() >= MAYORIA_DE_EDAD;
+    }
+
+    /**
+     * Descripción de la persona. Las subclases SOBRESCRIBEN este método
+     * para agregar sus datos particulares (polimorfismo por sobreescritura).
+     */
+    public String mostrarInformacion() {
+        return nombre + " (" + calcularEdad() + " años)";
+    }
+
+    /**
+     * SOBRECARGA de mostrarInformacion(): misma firma de nombre, distinta
+     * lista de parámetros. Permite pedir también los datos de contacto.
+     */
+    public String mostrarInformacion(boolean incluirContacto) {
+        String info = mostrarInformacion();
+        if (incluirContacto) {
+            info += " | Dir: " + direccion + " | Tel: " + telefono
+                    + " | Nac: " + fechaNacimiento.format(FORMATO_FECHA);
+        }
+        return info;
+    }
+
+    @Override
+    public String toString() {
+        return mostrarInformacion();
     }
 }
