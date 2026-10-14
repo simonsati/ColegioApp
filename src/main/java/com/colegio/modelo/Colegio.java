@@ -77,6 +77,16 @@ public class Colegio {
     }
 
     /**
+     * Copia de la lista de profesores ordenada por pago mensual total,
+     * de MAYOR a MENOR. No altera el orden de registro original.
+     */
+    public List<Profesor> getProfesoresOrdenadosPorSalario() {
+        List<Profesor> ordenados = new ArrayList<>(profesores);
+        ordenados.sort((a, b) -> Double.compare(b.calcularPagoMensual(), a.calcularPagoMensual()));
+        return ordenados;
+    }
+
+    /**
      * Lista polimórfica con todas las personas del colegio. Cada elemento
      * responde a mostrarInformacion() según su clase real.
      */
