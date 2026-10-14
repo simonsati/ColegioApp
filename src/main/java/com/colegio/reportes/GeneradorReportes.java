@@ -2,6 +2,7 @@ package com.colegio.reportes;
 
 import com.colegio.modelo.Colegio;
 import com.colegio.modelo.Estudiante;
+import com.colegio.modelo.Profesor;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -51,6 +52,42 @@ public class GeneradorReportes {
         }
         sb.append(linea('-'));
         sb.append("Total de estudiantes: ").append(estudiantes.size()).append('\n');
+        return sb.toString();
+    }
+
+    /**
+     * REPORTE 2: profesores ordenados por salario total (de mayor a menor),
+     * con sus prestaciones sociales y los totales que debe cubrir el colegio.
+     */
+    public String reporteProfesoresPorSalario(Colegio colegio) {
+        StringBuilder sb = new StringBuilder();
+        encabezado(sb, "REPORTE DE PROFESORES POR SALARIO (MAYOR A MENOR)", colegio);
+        List<Profesor> profesores = colegio.getProfesoresOrdenadosPorSalario();
+        if (profesores.isEmpty()) {
+            sb.append("No hay profesores registrados.\n");
+            return sb.toString();
+        }
+        sb.append(String.format("%-4s %-12s %-24s %-18s %5s %11s %14s %14s %14s%n",
+                "#", "Cédula", "Nombre", "Área", "Horas", "Valor hora",
+                "Salario total", "Prestaciones", "Costo total"));
+        sb.append(linea('-'));
+        int i = 1;
+        for (Profesor p : profesores) {
+            sb.append(String.format("%-4d %-12s %-24s %-18s %5d %11s %14s %14s %14s%n",
+                    i++, p.getCedula(), recortar(p.getNombre(), 24), recortar(p.getArea(), 18),
+                    p.getHorasDictadas(), moneda(p.getSalarioHora()),
+                    moneda(p.calcularPagoMensual()), moneda(p.calcularPrestaciones()),
+                    moneda(p.calcularCostoTotal())));
+        }
+        sb.append(linea('-'));
+        double nomina = colegio.calcularTotalNomina();
+        double prestaciones = colegio.calcularTotalPrestaciones();
+        sb.append(String.format("Total de profesores:                %d%n", profesores.size()));
+        sb.append(String.format("Total salarios (nómina):            %s%n", moneda(nomina)));
+        sb.append(String.format("TOTAL PRESTACIONES SOCIALES (19%%):  %s%n", moneda(prestaciones)));
+        sb.append(String.format("Costo total para el colegio:        %s%n", moneda(nomina + prestaciones)));
+        sb.append(linea('='));
+        sb.append("Salario total = salario por hora x horas dictadas + 30% por preparación de clase.\n");
         return sb.toString();
     }
 
