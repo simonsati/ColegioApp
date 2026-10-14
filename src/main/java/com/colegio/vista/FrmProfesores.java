@@ -1,6 +1,9 @@
 package com.colegio.vista;
 
 import com.colegio.modelo.Colegio;
+import com.colegio.modelo.Profesor;
+import java.util.Locale;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Formulario (JFrame del editor gráfico de NetBeans) para registrar
@@ -8,11 +11,40 @@ import com.colegio.modelo.Colegio;
  */
 public class FrmProfesores extends javax.swing.JFrame {
 
+    private static final String[] COLUMNAS = {
+        "Cédula", "Nombre", "Edad", "Área", "Salario/hora", "Horas", "Pago mensual", "Prestaciones (19%)"
+    };
+
     private final Colegio colegio;
+    private final DefaultTableModel modeloTabla;
 
     public FrmProfesores(Colegio colegio) {
         this.colegio = colegio;
         initComponents();
+        modeloTabla = new DefaultTableModel(COLUMNAS, 0) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false; // la tabla es solo de consulta
+            }
+        };
+        tblProfesores.setModel(modeloTabla);
+        cargarTabla();
+    }
+
+    /** Vuelve a llenar la tabla con los profesores registrados en el colegio. */
+    private void cargarTabla() {
+        modeloTabla.setRowCount(0);
+        for (Profesor p : colegio.getProfesores()) {
+            modeloTabla.addRow(new Object[]{
+                p.getCedula(), p.getNombre(), p.calcularEdad(), p.getArea(),
+                moneda(p.getSalarioHora()), p.getHorasDictadas(),
+                moneda(p.calcularPagoMensual()), moneda(p.calcularPrestaciones())
+            });
+        }
+    }
+
+    private static String moneda(double valor) {
+        return String.format(Locale.forLanguageTag("es-CO"), "$%,.0f", valor);
     }
 
     /**
