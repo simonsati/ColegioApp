@@ -20,7 +20,7 @@ public class GeneradorReportes {
     private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     /** Ancho (en caracteres) de las líneas separadoras del reporte. */
-    private int anchoLinea = 118;
+    private int anchoLinea = 120;
 
     // ---------------------------------------------------------------- get / set
     public int getAnchoLinea() {

@@ -81,7 +81,7 @@ public class FrmReportes extends javax.swing.JFrame {
         getContentPane().add(pnlOpciones, java.awt.BorderLayout.NORTH);
 
         txtReporte.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
-        txtReporte.setColumns(120);
+        txtReporte.setColumns(126);
         txtReporte.setRows(25);
         txtReporte.setEditable(false);
         scrollReporte.setViewportView(txtReporte);
