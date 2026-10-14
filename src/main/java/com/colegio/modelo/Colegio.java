@@ -44,12 +44,36 @@ public class Colegio {
     // ---------------------------------------------------------------- registro
     /** SOBRECARGA de registrar: versión para Profesor. */
     public void registrar(Profesor profesor) {
+        if (buscarProfesor(profesor.getCedula()) != null) {
+            throw new IllegalArgumentException("Ya existe un profesor con la cédula " + profesor.getCedula());
+        }
         profesores.add(profesor);
     }
 
     /** SOBRECARGA de registrar: versión para Estudiante. */
     public void registrar(Estudiante estudiante) {
+        if (buscarEstudiante(estudiante.getCodigo()) != null) {
+            throw new IllegalArgumentException("Ya existe un estudiante con el código " + estudiante.getCodigo());
+        }
         estudiantes.add(estudiante);
+    }
+
+    public Profesor buscarProfesor(String cedula) {
+        for (Profesor p : profesores) {
+            if (p.getCedula().equalsIgnoreCase(cedula.trim())) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public Estudiante buscarEstudiante(String codigo) {
+        for (Estudiante e : estudiantes) {
+            if (e.getCodigo().equalsIgnoreCase(codigo.trim())) {
+                return e;
+            }
+        }
+        return null;
     }
 
     /**
