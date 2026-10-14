@@ -35,7 +35,30 @@ public class FrmEstudiantes extends javax.swing.JFrame {
             }
         };
         tblEstudiantes.setModel(modeloTabla);
+        tblEstudiantes.setToolTipText("Doble clic sobre un estudiante para ver su ficha completa");
+        tblEstudiantes.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && tblEstudiantes.getSelectedRow() >= 0) {
+                    mostrarFicha(tblEstudiantes.getSelectedRow());
+                }
+            }
+        });
         cargarTabla();
+    }
+
+    /**
+     * Muestra la ficha del estudiante usando la versión SOBRECARGADA de
+     * mostrarInformacion(boolean) para incluir los datos de contacto.
+     */
+    private void mostrarFicha(int fila) {
+        String codigo = (String) modeloTabla.getValueAt(fila, 0);
+        Estudiante estudiante = colegio.buscarEstudiante(codigo);
+        if (estudiante != null) {
+            JOptionPane.showMessageDialog(this, estudiante.mostrarInformacion(true)
+                    + "\nAcudiente: " + estudiante.getAcudiente(),
+                    "Ficha del estudiante", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     /** Vuelve a llenar la tabla con los estudiantes registrados en el colegio. */
