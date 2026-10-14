@@ -52,6 +52,18 @@ public class FrmProfesores extends javax.swing.JFrame {
         }
     }
 
+    private void limpiarFormulario() {
+        txtNombre.setText("");
+        txtCedula.setText("");
+        txtDireccion.setText("");
+        txtTelefono.setText("");
+        txtFechaNacimiento.setText("");
+        txtSalarioHora.setText("");
+        txtHorasDictadas.setText("");
+        cmbArea.setSelectedIndex(0);
+        txtNombre.requestFocus();
+    }
+
     private static String moneda(double valor) {
         return String.format(Locale.forLanguageTag("es-CO"), "$%,.0f", valor);
     }
@@ -206,7 +218,7 @@ public class FrmProfesores extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        // TODO add your handling code here:
+        limpiarFormulario();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
@@ -226,6 +238,7 @@ public class FrmProfesores extends javax.swing.JFrame {
             colegio.registrar(profesor);   // método sobrecargado
 
             cargarTabla();
+            limpiarFormulario();
             JOptionPane.showMessageDialog(this,
                     "Profesor registrado.\nPago mensual: " + moneda(profesor.calcularPagoMensual())
                     + "\nPrestaciones: " + moneda(profesor.calcularPrestaciones()),
@@ -239,7 +252,7 @@ public class FrmProfesores extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_btnCerrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
