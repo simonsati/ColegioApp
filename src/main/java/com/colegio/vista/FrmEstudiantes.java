@@ -2,6 +2,12 @@ package com.colegio.vista;
 
 import com.colegio.modelo.Colegio;
 import com.colegio.modelo.Estudiante;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -13,6 +19,8 @@ public class FrmEstudiantes extends javax.swing.JFrame {
     private static final String[] COLUMNAS = {
         "Código", "Nombre", "Edad", "Grado", "Teléfono", "Dirección", "Acudiente"
     };
+    private static final DateTimeFormatter FORMATO_FECHA =
+            DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     private final Colegio colegio;
     private final DefaultTableModel modeloTabla;
@@ -38,6 +46,29 @@ public class FrmEstudiantes extends javax.swing.JFrame {
                 e.getCodigo(), e.getNombre(), e.calcularEdad(), e.getGrado(),
                 e.getTelefono(), e.getDireccion(), e.getAcudiente()
             });
+        }
+    }
+
+    /** Devuelve el texto del campo o lanza excepción si está vacío. */
+    private static String requerido(JTextField campo, String nombreCampo) {
+        String valor = campo.getText().trim();
+        if (valor.isEmpty()) {
+            throw new IllegalArgumentException("El campo \"" + nombreCampo + "\" es obligatorio.");
+        }
+        return valor;
+    }
+
+    /** Convierte dd/mm/aaaa a LocalDate validando que no sea una fecha futura. */
+    private static LocalDate leerFecha(JTextField campo) {
+        String texto = requerido(campo, "Fecha de nacimiento");
+        try {
+            LocalDate fecha = LocalDate.parse(texto, FORMATO_FECHA);
+            if (fecha.isAfter(LocalDate.now())) {
+                throw new IllegalArgumentException("La fecha de nacimiento no puede ser futura.");
+            }
+            return fecha;
+        } catch (DateTimeParseException ex) {
+            throw new IllegalArgumentException("La fecha debe tener el formato dd/mm/aaaa (ej. 14/08/2012).");
         }
     }
 
@@ -164,7 +195,26 @@ public class FrmEstudiantes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+        try {
+            // Estudiante no tiene constructor propio: se usa el de por defecto
+            // y los datos se asignan con los setters.
+            Estudiante estudiante = new Estudiante();
+            estudiante.setNombre(requerido(txtNombre, "Nombre"));
+            estudiante.setCodigo(requerido(txtCodigo, "Código"));
+            estudiante.setDireccion(requerido(txtDireccion, "Dirección"));
+            estudiante.setTelefono(requerido(txtTelefono, "Teléfono"));
+            estudiante.setAcudiente(requerido(txtAcudiente, "Acudiente"));
+            estudiante.setFechaNacimiento(leerFecha(txtFechaNacimiento));
+            estudiante.setGrado((String) cmbGrado.getSelectedItem());
+
+            colegio.registrar(estudiante);   // método sobrecargado
+
+            cargarTabla();
+            JOptionPane.showMessageDialog(this, "Estudiante registrado:\n" + estudiante.mostrarInformacion(),
+                    "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Dato inválido", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
