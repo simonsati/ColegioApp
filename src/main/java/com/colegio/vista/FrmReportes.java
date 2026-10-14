@@ -2,6 +2,8 @@ package com.colegio.vista;
 
 import com.colegio.modelo.Colegio;
 import com.colegio.reportes.GeneradorReportes;
+import java.awt.print.PrinterException;
+import javax.swing.JOptionPane;
 
 /**
  * Ventana (JFrame del editor gráfico de NetBeans) que muestra e imprime
@@ -15,6 +17,11 @@ public class FrmReportes extends javax.swing.JFrame {
     public FrmReportes(Colegio colegio) {
         this.colegio = colegio;
         initComponents();
+    }
+
+    private void mostrar(String reporte) {
+        txtReporte.setText(reporte);
+        txtReporte.setCaretPosition(0);
     }
 
     /**
@@ -86,19 +93,30 @@ public class FrmReportes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReporteEstudiantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteEstudiantesActionPerformed
-        // TODO add your handling code here:
+        mostrar(generador.reporteEstudiantes(colegio));
     }//GEN-LAST:event_btnReporteEstudiantesActionPerformed
 
     private void btnReporteProfesoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteProfesoresActionPerformed
-        // TODO add your handling code here:
+        mostrar(generador.reporteProfesoresPorSalario(colegio));
     }//GEN-LAST:event_btnReporteProfesoresActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        // TODO add your handling code here:
+        if (txtReporte.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Primero genere un reporte.", "Imprimir",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        try {
+            // Abre el diálogo de impresión del sistema (impresora o PDF)
+            txtReporte.print();
+        } catch (PrinterException ex) {
+            JOptionPane.showMessageDialog(this, "No se pudo imprimir: " + ex.getMessage(), "Imprimir",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_btnCerrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

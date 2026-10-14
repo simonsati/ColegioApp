@@ -114,7 +114,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEstudiantesActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        // TODO: abrir la ventana de reportes
+        abrir(new FrmReportes(colegio));
     }//GEN-LAST:event_btnReportesActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
