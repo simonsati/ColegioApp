@@ -1,6 +1,8 @@
 package com.colegio.vista;
 
 import com.colegio.modelo.Colegio;
+import com.colegio.modelo.Estudiante;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Formulario (JFrame del editor gráfico de NetBeans) para registrar
@@ -8,11 +10,35 @@ import com.colegio.modelo.Colegio;
  */
 public class FrmEstudiantes extends javax.swing.JFrame {
 
+    private static final String[] COLUMNAS = {
+        "Código", "Nombre", "Edad", "Grado", "Teléfono", "Dirección", "Acudiente"
+    };
+
     private final Colegio colegio;
+    private final DefaultTableModel modeloTabla;
 
     public FrmEstudiantes(Colegio colegio) {
         this.colegio = colegio;
         initComponents();
+        modeloTabla = new DefaultTableModel(COLUMNAS, 0) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false; // la tabla es solo de consulta
+            }
+        };
+        tblEstudiantes.setModel(modeloTabla);
+        cargarTabla();
+    }
+
+    /** Vuelve a llenar la tabla con los estudiantes registrados en el colegio. */
+    private void cargarTabla() {
+        modeloTabla.setRowCount(0);
+        for (Estudiante e : colegio.getEstudiantes()) {
+            modeloTabla.addRow(new Object[]{
+                e.getCodigo(), e.getNombre(), e.calcularEdad(), e.getGrado(),
+                e.getTelefono(), e.getDireccion(), e.getAcudiente()
+            });
+        }
     }
 
     /**
