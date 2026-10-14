@@ -2,7 +2,13 @@ package com.colegio.vista;
 
 import com.colegio.modelo.Colegio;
 import com.colegio.modelo.Profesor;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Locale;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -14,6 +20,9 @@ public class FrmProfesores extends javax.swing.JFrame {
     private static final String[] COLUMNAS = {
         "Cédula", "Nombre", "Edad", "Área", "Salario/hora", "Horas", "Pago mensual", "Prestaciones (19%)"
     };
+    /** dd/MM/uuuu con resolución estricta: rechaza fechas como 31/02/2000. */
+    private static final DateTimeFormatter FORMATO_FECHA =
+            DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     private final Colegio colegio;
     private final DefaultTableModel modeloTabla;
@@ -45,6 +54,29 @@ public class FrmProfesores extends javax.swing.JFrame {
 
     private static String moneda(double valor) {
         return String.format(Locale.forLanguageTag("es-CO"), "$%,.0f", valor);
+    }
+
+    /** Devuelve el texto del campo o lanza excepción si está vacío. */
+    private static String requerido(JTextField campo, String nombreCampo) {
+        String valor = campo.getText().trim();
+        if (valor.isEmpty()) {
+            throw new IllegalArgumentException("El campo \"" + nombreCampo + "\" es obligatorio.");
+        }
+        return valor;
+    }
+
+    /** Convierte dd/mm/aaaa a LocalDate validando que no sea una fecha futura. */
+    private static LocalDate leerFecha(JTextField campo) {
+        String texto = requerido(campo, "Fecha de nacimiento");
+        try {
+            LocalDate fecha = LocalDate.parse(texto, FORMATO_FECHA);
+            if (fecha.isAfter(LocalDate.now())) {
+                throw new IllegalArgumentException("La fecha de nacimiento no puede ser futura.");
+            }
+            return fecha;
+        } catch (DateTimeParseException ex) {
+            throw new IllegalArgumentException("La fecha debe tener el formato dd/mm/aaaa (ej. 25/03/1985).");
+        }
     }
 
     /**
@@ -178,7 +210,32 @@ public class FrmProfesores extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+        try {
+            String nombre = requerido(txtNombre, "Nombre");
+            String cedula = requerido(txtCedula, "Cédula");
+            String direccion = requerido(txtDireccion, "Dirección");
+            String telefono = requerido(txtTelefono, "Teléfono");
+            LocalDate fechaNacimiento = leerFecha(txtFechaNacimiento);
+            double salarioHora = Double.parseDouble(requerido(txtSalarioHora, "Salario por hora"));
+            int horas = Integer.parseInt(requerido(txtHorasDictadas, "Horas dictadas"));
+            String area = (String) cmbArea.getSelectedItem();
+
+            // Único constructor de la jerarquía (valida mayoría de edad)
+            Profesor profesor = new Profesor(nombre, direccion, telefono, fechaNacimiento,
+                    cedula, area, salarioHora, horas);
+            colegio.registrar(profesor);   // método sobrecargado
+
+            cargarTabla();
+            JOptionPane.showMessageDialog(this,
+                    "Profesor registrado.\nPago mensual: " + moneda(profesor.calcularPagoMensual())
+                    + "\nPrestaciones: " + moneda(profesor.calcularPrestaciones()),
+                    "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Salario por hora y horas dictadas deben ser números válidos.",
+                    "Dato inválido", JOptionPane.WARNING_MESSAGE);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Dato inválido", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
